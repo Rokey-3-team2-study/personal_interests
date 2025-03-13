@@ -95,7 +95,7 @@
 
 #### 1) Language-conditioned Imitation Learning for Manipulation
 - 개념
-  - 언어 조건 모방 학습에서는 자연어 지시${(l)}$와 현재 상태${(s_t)}$를 기반으로 적절한 행동을 예측하는 목표 조건 정책을 학습
+  - 언어 조건 모방 학습에서는 자연어 지시 ${(l)}$ 와 현재 상태 ${(s_t)}$ 를 기반으로 적절한 행동을 예측하는 목표 조건 정책을 학습
   - 주어진 예제 데이터를 그대로 따라 학습하는 방식으로 작동, 최대 우도 목적 함수 사용 ${L_{GCIL}=\mathbb{E_{(\tau, l) \sim \mathcal{D}}} \displaystyle{\sum_{t=0}^{|r|} \log \pi_\theta (a_t|s_t, l)}}$
     - ${\pi_\theta (a_t|s_t, l)}$ : a goal-conditioned policy
     - ${\mathcal{D} = \{ \tau_i \}^N_i}$ : the language-annotated demonstration dataset
