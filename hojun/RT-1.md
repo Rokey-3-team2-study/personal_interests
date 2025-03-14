@@ -67,6 +67,51 @@
     - ${L(\pi) = - \displaystyle\sum_{(x_i, a_i) \in \mathcal{D}}{\log{\pi(a_i|i, x_i)}}}$
 
 ### 4. System Overview
+- RT-1은 대규모 데이터 학습을 통해 범용 로봇 학습 모델을 구축하고, 이를 실제 로봇에 적용하여 실시간 제어가 가능하도록 설계하는 것이 목표
+
+4.1 로봇 하드웨어 및 환경
+<div align="center">
+
+![Figure 2](/hojun/images/(RT-1)%20Figure_2.png)
+
+</div>
+- Everyday Robots의 모바일 매니퓰레이터가 사용 (Fig. 2 (d))
+    - 7축 로봇 팔
+    - 2-핑거 그리퍼
+    - 모바일 베이스
+- 훈련 환경 : three kitchen-based environments (Fig. 2 (a,b,c))
+    - real office kitchens 1
+    - real office kitchens 2
+    - a training environment modelled off these real kitchens.
+
+4.2 데이터 수집 및 구성
+- RT-1의 학습을 위해 130,000개 이상의 인간 시연 데이터를 활용했으며, 이는 700개 이상의 다양한 로봇 작업을 포함
+    - 시연 데이터 + 자연어 명령
+    - 작업 : verbs such as “pick”, “open” or “place upright”
+    - 목표 : nouns such as “coke can”, “apple”, or “drawer”
+
+4.3 네트워크 아키텍처: RT-1 모델 구조
+<div align="center">
+
+![Figure 1](/hojun/images/(RT-1)%20Figure_1(a).png)
+
+</div>
+- 입력
+    - 비전
+    - 자연어 명령
+- 모델
+    - EfficientNet
+        -  a pretrained embedding of the instruction via FiLM
+    - TokenLearner
+    - Transformer
+- 출력 = actions
+    - 7D for the arm movement (x, y, z, roll, pitch, yaw, opening of the gripper)
+    - 3D for base movement (x, y, yaw)
+    - modes (controlling the arm | the base | terminating the episode)
+
+4.4 실시간 제어 및 추론 속도
+- RT-1은 3Hz(초당 3번) 속도로 동작하며, 실시간 로봇 제어가 가능하도록 설계
+- until : a “terminate” action or hits a pre-set time step limit.
 
 ### 5. RT-1: Robotics Transformer
 
