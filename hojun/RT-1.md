@@ -54,13 +54,13 @@
 
 3.2 트랜스포머 모델 (Transformers)
 - RT-1은 트랜스포머(Transformer) 기반 정책 모델을 활용하여 비전-언어 정보를 행동으로 변환
-    - 입력 시퀀스 ${\{ \xi_h \}^H_{h=0}}$를 받아, 출력 시퀀스 ${\{ y_k \}^K_{k=0}}$로 변환 with Self-attention, FC
+    - 입력 시퀀스 ${{\{ \xi_h \}}^H_{h=0}}$를 받아, 출력 시퀀스 ${{\{ y_k \}}^K_{k=0}}$로 변환 with Self-attention, FC
     - parameterization : 정책 ${\pi}$ by first mapping inputs ${i, {\{ x_j \}}^t_{j=0}}$ → 입력 시퀀스, 다음 행동 ${a_t}$ → 출력 시퀀스
 
 3.3 모방 학습 (Imitation Learning)
 - RT-1은 인간이 직접 수행한 로봇 시연 데이터를 학습하는 모방 학습 방식을 사용
 - 기본 원리
-    - Dataset 활용 : ${\mathcal{D} = {\{(i^{(n)},{\{(x^{(n)}_{t},a^{(n)}_{t})\}}^{T(n)}_{t=0})\}}^{N}_{n=0}}$
+    - Dataset 활용 : ${\mathcal{D} = \{(i^{(n)},\{(x^{(n)}_{t},a^{(n)}_{t})\}^{T(n)}_{t=0})\}^{N}_{n=0}}$
     - Behavioral Cloning으로 ${\pi}$ 학습
 - 목표 함수
     - 로봇이 인간의 행동을 모방하도록 로그 우도 최대화
