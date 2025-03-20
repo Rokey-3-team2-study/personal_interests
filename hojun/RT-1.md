@@ -67,11 +67,129 @@
     - ${L(\pi) = - \displaystyle\sum_{(x_i, a_i) \in \mathcal{D}}{\log{\pi(a_i|i, x_i)}}}$
 
 ### 4. System Overview
+- RT-1은 대규모 데이터 학습을 통해 범용 로봇 학습 모델을 구축하고, 이를 실제 로봇에 적용하여 실시간 제어가 가능하도록 설계하는 것이 목표
+
+4.1 로봇 하드웨어 및 환경
+
+<div align="center">
+
+![Figure 2](/hojun/images/(RT-1)%20Figure_2.png)
+
+</div>
+
+- Everyday Robots의 모바일 매니퓰레이터가 사용 (Fig. 2 (d))
+    - 7축 로봇 팔
+    - 2-핑거 그리퍼
+    - 모바일 베이스
+- 훈련 환경 : three kitchen-based environments (Fig. 2 (a,b,c))
+    - real office kitchens 1
+    - real office kitchens 2
+    - a training environment modelled off these real kitchens.
+
+4.2 데이터 수집 및 구성
+- RT-1의 학습을 위해 130,000개 이상의 인간 시연 데이터를 활용했으며, 이는 700개 이상의 다양한 로봇 작업을 포함
+    - 시연 데이터 + 자연어 명령
+    - 작업 : verbs such as “pick”, “open” or “place upright”
+    - 목표 : nouns such as “coke can”, “apple”, or “drawer”
+
+4.3 네트워크 아키텍처: RT-1 모델 구조
+
+<div align="center">
+
+![Figure 1](/hojun/images/(RT-1)%20Figure_1(a).png)
+
+</div>
+
+- 입력
+    - 비전
+    - 자연어 명령
+- 모델
+    - EfficientNet
+        -  a pretrained embedding of the instruction via FiLM
+    - TokenLearner
+    - Transformer
+- 출력 = actions
+    - 7D for the arm movement (x, y, z, roll, pitch, yaw, opening of the gripper)
+    - 3D for base movement (x, y, yaw)
+    - modes (controlling the arm | the base | terminating the episode)
+
+4.4 실시간 제어 및 추론 속도
+- RT-1은 3Hz(초당 3번) 속도로 동작하며, 실시간 로봇 제어가 가능하도록 설계
+- until : a “terminate” action or hits a pre-set time step limit.
 
 ### 5. RT-1: Robotics Transformer
 
+<div align="center">
+
+![Figure 3](/hojun/images/(RT-1)%20Figure_3.png)
+
+</div>
+
+- 모델
+    - Input
+        - Image
+            - 로봇 카메라에서 입력된 6개의 연속 이미지 프레임
+            - EfficientNet을 이용해 특징을 추출한 후, TokenLearner로 중요한 정보만 선별.
+        - Language Input : 자연어 명령
+    - 아키텍처
+        - EfficientNet
+            - 이미지 특징 추출
+            - TokenLearner 모듈을 통해 중요 정보만 추출하여 압축축
+        - FiLM
+            - 자연어 명령을 이미지 특징에 결합
+            - Universal Sentence Encoder + Feature Map
+        - TokenLearner
+            - Transformer 연산량 감소를 위해 시각 토큰 축소
+            - 로봇 행동 예측에 중요한 정보 유지
+        - Transformer
+            - Decoder-Only
+        - Action Tokenization
+            - Transformer 출력 → 이산적 행동 토큰으로 변환
+            - 로봇 팔 7변수
+            - 기저 3변수
+            - 모드 변수 (controlling arm | base | terminating the episode)
+            - 행동값을 256개의 정해진 범위 내에서 이산화(discretization) 하여 Transformer가 쉽게 예측할 수 있도록 함.
+- 장점
+    - Mulit-Modality
+    - Speed
+    - Generalization performance
+    - 이산적 행동 토큰화 : 연속적 행동 출력보다 안정적인 학습 가능
+
 ### 6. Experiments
 
+- 질문
+    - 다양한 작업을 학습하고, 제로샷으로 새로운 작업, 객체, 환경에 일반화할 수 있는가?
+    - 이질적인 데이터 소스를 통합하여 RT-1의 성능을 더욱 향상시킬 수 있는가?
+    - 장기적인 작업(long-horizon tasks)에서도 일반화할 수 있는가?
+    - 데이터의 양과 다양성이 RT-1의 일반화 성능에 미치는 영향은?
+    - 모델 설계의 중요한 요소와 그 영향은 무엇인가?
+
+- 지표
+    - Task Success Rate
+    - Generalization Performance
+    - Long-Horizon Task Success Rate
+    - Robustness to Distractors & Backgrounds
+    - Data Scaling Effect
+    - Efficiency Metrics
+
 ### 7. Conclusions, Limitations and Future Work
+
+- 결론
+    - RT-1은 대규모 다중작업 로봇 정책 학습을 위한 Transformer 기반 모델로, 130,000개의 시연 데이터를 활용해 700개 이상의 작업을 수행할 수 있습니다. 
+    - 특히, 제로샷 일반화, 이질적인 데이터 통합, 장기적인 작업 수행, 데이터 스케일링 효과 등에서 기존 모델 대비 탁월한 성능을 입증했습니다.
+- 한계
+    - 모방 학습의 한계
+        - 모방 학습 기반 → 제공된 데이터 범위를 초과하는 작업 수행 불가
+    - 완전히 새로운 모션의 생성 불가
+        - 새로운 객체와 작업 조합에는 일반화 가능
+        - 완전히 새로운 모션은 생성 불가
+    - 조작 능력의 한계
+        - 기본적인 skill : picking, placing, opening/closing 등에 집중
+        - 정교한 조작에 대한 일반화는 제한적
+- 향후 연구
+    - 로봇 기술 향상을 위한 데이터 확장
+    - 모델의 반응 속도 및 컨텍스트 유지력 강화
+    - 다양한 환경에서의 일반화 강화
+    - 오픈소스화 및 연구 확장
 
 ### Appendix
