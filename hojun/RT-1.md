@@ -1,6 +1,47 @@
 # Robotics Transformer for Real-World Control at Scale
+
 [link](https://robotics-transformer1.github.io/)
 
+### ✅ **why : 연구 목적 및 이유**
+
+- 기존 로봇 학습은 **단일 태스크 중심**이며 **대규모 일반화된 학습**이 어려움.
+- 컴퓨터 비전과 NLP에서 성공한 방식처럼, **다양한 데이터 기반의 대규모 task-agnostic 학습**을 로봇에 적용해보려는 시도.
+- 특히 로봇의 경우 실세계에서의 **데이터 수집이 고비용·고난이도**이기 때문에, **제로샷 일반화** 능력이 더욱 중요.
+- 따라서 연구 질문은: "다양한 태스크를 포함한 대규모 로봇 데이터셋에 대해 **하나의 모델로 일반화가 가능한가?**"
+
+### ✅ **what : 연구의 기여**
+
+1. **RT-1 모델 제안**: 비전, 언어, 액션을 통합하는 고속 실행 가능한 Transformer 기반 로봇 정책 모델.
+2. **대규모 데이터셋 수집**: 13대의 로봇을 이용해 17개월 동안 130k개의 실제 로봇 데모 수집 (700+ 태스크 포함).
+3. **실제 환경에서의 실험 검증**:
+   - 3000개 이상의 실세계 실험을 통해 **일반화 성능, 견고성, 제로샷 수행력** 검증.
+   - 기존 Gato, BC-Z 등 모델과 비교하여 RT-1이 seen/unseen/generalization task 모두에서 월등한 성능을 보임.
+4. **멀티-로봇 및 시뮬레이션 데이터 통합**이 가능함을 입증 → 타 로봇에서 수집한 데이터도 학습에 유의미하게 활용 가능.
+
+### ✅ **how : 연구의 방법론**
+
+- **아키텍처**:
+  - EfficientNet-B3 + FiLM으로 시각 피처 추출 및 언어 임베딩 융합.
+  - TokenLearner를 활용하여 피처를 토큰으로 압축 → Transformer에 입력.
+  - Transformer는 시퀀스 모델로 동작하며 discretized action token을 생성.
+  - 총 35M 파라미터로 구성, **3Hz 실시간 제어 가능**.
+
+- **학습 방식**:  
+  - Imitation Learning 기반 Behavioral Cloning.
+  - 모든 데이터는 성공적인 human demonstration 기반.
+
+- **데이터셋**:
+  - 약 130,000개의 시나리오, 700개 이상의 instruction 태스크.
+  - 다양한 스킬 구성: pick, place, knock over, open/close drawer 등.
+
+- **실험 구성**:
+  - Seen task 성능 (97%).
+  - Unseen task 제로샷 generalization 성능 (76%).
+  - Distractor/Background robustness.
+  - Long-horizon instruction 수행 (예: "과자 정리하기" 등 50단계까지 가능).
+  - Sim 데이터 및 타 로봇 데이터로 학습 확장 시도 → 성능 향상 확인.
+
+---
 ### 1. Introduction
 1.1 연구 배경 및 동기
 - 기존 연구들은 여러 가지 방식으로 로봇 학습을 시도했으나, 한계를 가짐
